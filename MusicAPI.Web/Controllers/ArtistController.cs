@@ -3,27 +3,26 @@ using Microsoft.AspNetCore.Mvc;
 using MusicAPI.Data.Models;
 using MusicAPI.Services.Interfaces;
 using MusicAPI.Web.Models;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
 
 namespace MusicAPI.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class GenreController : ControllerBase
+    public class ArtistController : ControllerBase
     {
-        private readonly IGenreService genreService;
 
-        public GenreController(IGenreService genreService)
+        private readonly IArtistService artistService;
+
+        public ArtistController(IArtistService artistService)
         {
-            this.genreService = genreService;
+            this.artistService = artistService;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            var model = await this.genreService.GetGenreByIdAsync(id, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()});
+            var model = await this.artistService.GetArtistByIdAsync(id, x => new ArtistViewModel { Id = x.Id, Name = x.Name, IsGroup = x.IsGroup, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray() });
 
             if (model == null)
             {
@@ -38,58 +37,57 @@ namespace MusicAPI.Web.Controllers
             [FromQuery][Range(0, int.MaxValue)] int page = 1,
             [FromQuery][Range(5, 100)] int perPage = 5)
         {
-            var genres = await this.genreService.GetGenrePageAsync(page, perPage, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name}).ToArray()});
+            var artists = await this.artistService.GetArtistPageAsync(page, perPage, x => new ArtistViewModel { Id = x.Id, Name = x.Name, IsGroup = x.IsGroup, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray() });
 
-            return this.Ok(genres);
+            return this.Ok(artists);
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> CreateGenreAsync(GenreInputModel model)
+        public async Task<IActionResult> CreateArtistAsync(ArtistInputModel model)
         {
-            var genre = new Genre { Name = model.Name };
-            var id = await this.genreService.CreateGenreAsync(genre);
+            var artist = new Artist { Name = model.Name, IsGroup = model.IsGroup };
+            var id = await this.artistService.CreateArtistAsync(artist);
 
             return this.CreatedAtAction(
                 nameof(this.Get),
                 new
                 {
                     id = id.ToString()
-                }) ;
+                });
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> UpdateGenreAsync([FromRoute] Guid id, GenreInputModel model)
+        public async Task<IActionResult> UpdateArtistAsync([FromRoute] Guid id, ArtistInputModel model)
         {
-            bool exists = this.genreService.ExistsAsync(id).Result;
+            bool exists = this.artistService.ExistsAsync(id).Result;
 
             if (!exists)
             {
                 return this.NotFound();
             }
-            var genre = new Genre { Id = id, Name = model.Name };
+            var artist = new Artist { Id = id, Name = model.Name, IsGroup = model.IsGroup };
 
-            await this.genreService.UpdateGenreAsync(genre);
+            await this.artistService.UpdateArtistAsync(artist);
 
-            return this.Ok(genre);
+            return this.Ok(artist);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteArtistAsync(Guid id)
         {
-            bool exists = await this.genreService.ExistsAsync(id);
+            bool exists = await this.artistService.ExistsAsync(id);
 
             if (!exists)
             {
                 return this.NotFound();
             }
 
-            await this.genreService.DeleteGenreAsync(id);
+            await this.artistService.DeleteArtistAsync(id);
 
             return this.Ok();
         }
-
     }
 }

@@ -52,6 +52,7 @@ namespace MusicAPI.Web
            .AddEntityFrameworkStores<MusicDbContext>();
 
             builder.Services.AddTransient<IGenreService, GenreService>();
+            builder.Services.AddTransient<IArtistService, ArtistService>();
             builder.Services.AddTransient<IAuthorizationService, AuthorizationService>();
 
 
@@ -93,6 +94,8 @@ namespace MusicAPI.Web
             await app.SeedUsersAsync();
 
             app.UseHttpsRedirection();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
