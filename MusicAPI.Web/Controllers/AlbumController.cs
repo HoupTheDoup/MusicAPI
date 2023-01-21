@@ -9,24 +9,23 @@ namespace MusicAPI.Web.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ArtistController : ControllerBase
+    public class AlbumController : ControllerBase
     {
+        private readonly IAlbumService albumService;
 
-        private readonly IArtistService artistService;
-
-        public ArtistController(IArtistService artistService)
+        public AlbumController(IAlbumService albumService)
         {
-            this.artistService = artistService;
+            this.albumService = albumService;
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            var model = await this.artistService.GetArtistByIdAsync(id, x => new ArtistViewModel
+            var model = await this.albumService.GetAlbumByIdAsync(id, x => new AlbumViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
-                IsGroup = x.IsGroup,
+                Artist = new ArtistViewModel { Name = x.Artist.Name },
                 Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()
             });
 
@@ -39,27 +38,27 @@ namespace MusicAPI.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetGenrePageAsync(
+        public async Task<IActionResult> GetAlbumPageAsync(
             [FromQuery][Range(0, int.MaxValue)] int page = 1,
             [FromQuery][Range(5, 100)] int perPage = 5)
         {
-            var artists = await this.artistService.GetArtistPageAsync(page, perPage, x => new ArtistViewModel
+            var albums = await this.albumService.GetAlbumPageAsync(page, perPage, x => new AlbumViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
-                IsGroup = x.IsGroup,
+                Artist = new ArtistViewModel { Name = x.Artist.Name, Id = x.ArtistId },
                 Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()
             });
 
-            return this.Ok(artists);
+            return this.Ok(albums);
         }
 
         [HttpPost]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> CreateArtistAsync(ArtistInputModel model)
+        public async Task<IActionResult> CreateAlbumAsync(AlbumInputModel model)
         {
-            var artist = new Artist { Name = model.Name, IsGroup = model.IsGroup };
-            var id = await this.artistService.CreateArtistAsync(artist);
+            var album = new Album { Name = model.Name, ArtistId = model.ArtistId };
+            var id = await this.albumService.CreateAlbumAsync(album);
 
             return this.CreatedAtAction(
                 nameof(this.Get),
@@ -71,33 +70,33 @@ namespace MusicAPI.Web.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> UpdateArtistAsync([FromRoute] Guid id, ArtistInputModel model)
+        public async Task<IActionResult> UpdateAlbumAsync([FromRoute] Guid id, AlbumInputModel model)
         {
-            bool exists = this.artistService.ExistsAsync(id).Result;
+            bool exists = this.albumService.ExistsAsync(id).Result;
 
             if (!exists)
             {
                 return this.NotFound();
             }
-            var artist = new Artist { Id = id, Name = model.Name, IsGroup = model.IsGroup };
+            var album = new Album { Id = id, Name = model.Name, ArtistId = model.ArtistId};
 
-            await this.artistService.UpdateArtistAsync(artist);
+            await this.albumService.UpdateAlbumAsync(album);
 
-            return this.Ok(artist);
+            return this.Ok(album);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> DeleteArtistAsync(Guid id)
+        public async Task<IActionResult> DeleteAlbumAsync(Guid id)
         {
-            bool exists = await this.artistService.ExistsAsync(id);
+            bool exists = await this.albumService.ExistsAsync(id);
 
             if (!exists)
             {
                 return this.NotFound();
             }
 
-            await this.artistService.DeleteArtistAsync(id);
+            await this.albumService.DeleteAlbumAsync(id);
 
             return this.Ok();
         }
