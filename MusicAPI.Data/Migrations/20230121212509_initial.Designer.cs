@@ -12,7 +12,7 @@ using MusicAPI.Data;
 namespace MusicAPI.Data.Migrations
 {
     [DbContext(typeof(MusicDbContext))]
-    [Migration("20230116165739_initial")]
+    [Migration("20230121212509_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,36 +23,6 @@ namespace MusicAPI.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("ArtistSong", b =>
-                {
-                    b.Property<Guid>("ArtistsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SongsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ArtistsId", "SongsId");
-
-                    b.HasIndex("SongsId");
-
-                    b.ToTable("ArtistSong");
-                });
-
-            modelBuilder.Entity("GenreSong", b =>
-                {
-                    b.Property<Guid>("GenresId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SongsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("GenresId", "SongsId");
-
-                    b.HasIndex("SongsId");
-
-                    b.ToTable("GenreSong");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -328,34 +298,34 @@ namespace MusicAPI.Data.Migrations
                     b.ToTable("Songs");
                 });
 
-            modelBuilder.Entity("ArtistSong", b =>
+            modelBuilder.Entity("MusicAPI.Data.Models.SongArtist", b =>
                 {
-                    b.HasOne("MusicAPI.Data.Models.Artist", null)
-                        .WithMany()
-                        .HasForeignKey("ArtistsId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Property<Guid>("SongId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasOne("MusicAPI.Data.Models.Song", null)
-                        .WithMany()
-                        .HasForeignKey("SongsId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Property<Guid>("ArtistId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("SongId", "ArtistId");
+
+                    b.HasIndex("ArtistId");
+
+                    b.ToTable("SongArtists");
                 });
 
-            modelBuilder.Entity("GenreSong", b =>
+            modelBuilder.Entity("MusicAPI.Data.Models.SongGenre", b =>
                 {
-                    b.HasOne("MusicAPI.Data.Models.Genre", null)
-                        .WithMany()
-                        .HasForeignKey("GenresId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("SongId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasOne("MusicAPI.Data.Models.Song", null)
-                        .WithMany()
-                        .HasForeignKey("SongsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("GenreId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("SongId", "GenreId");
+
+                    b.HasIndex("GenreId");
+
+                    b.ToTable("SongGenres");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -431,6 +401,44 @@ namespace MusicAPI.Data.Migrations
                     b.Navigation("Album");
                 });
 
+            modelBuilder.Entity("MusicAPI.Data.Models.SongArtist", b =>
+                {
+                    b.HasOne("MusicAPI.Data.Models.Artist", "Artist")
+                        .WithMany("Songs")
+                        .HasForeignKey("ArtistId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("MusicAPI.Data.Models.Song", "Song")
+                        .WithMany("Artists")
+                        .HasForeignKey("SongId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Artist");
+
+                    b.Navigation("Song");
+                });
+
+            modelBuilder.Entity("MusicAPI.Data.Models.SongGenre", b =>
+                {
+                    b.HasOne("MusicAPI.Data.Models.Genre", "Genre")
+                        .WithMany("Songs")
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("MusicAPI.Data.Models.Song", "Song")
+                        .WithMany("Genres")
+                        .HasForeignKey("SongId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("Song");
+                });
+
             modelBuilder.Entity("MusicAPI.Data.Models.Album", b =>
                 {
                     b.Navigation("Songs");
@@ -439,6 +447,20 @@ namespace MusicAPI.Data.Migrations
             modelBuilder.Entity("MusicAPI.Data.Models.Artist", b =>
                 {
                     b.Navigation("Albums");
+
+                    b.Navigation("Songs");
+                });
+
+            modelBuilder.Entity("MusicAPI.Data.Models.Genre", b =>
+                {
+                    b.Navigation("Songs");
+                });
+
+            modelBuilder.Entity("MusicAPI.Data.Models.Song", b =>
+                {
+                    b.Navigation("Artists");
+
+                    b.Navigation("Genres");
                 });
 #pragma warning restore 612, 618
         }

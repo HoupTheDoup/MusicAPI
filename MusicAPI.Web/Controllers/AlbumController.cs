@@ -72,7 +72,7 @@ namespace MusicAPI.Web.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateAlbumAsync([FromRoute] Guid id, AlbumInputModel model)
         {
-            bool exists = this.albumService.ExistsAsync(id).Result;
+            bool exists = await this.albumService.ExistsAsync(id);
 
             if (!exists)
             {

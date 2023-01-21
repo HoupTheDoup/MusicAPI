@@ -23,7 +23,7 @@ namespace MusicAPI.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            var model = await this.genreService.GetGenreByIdAsync(id, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()});
+            var model = await this.genreService.GetGenreByIdAsync(id, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()});
 
             if (model == null)
             {
@@ -38,7 +38,7 @@ namespace MusicAPI.Web.Controllers
             [FromQuery][Range(0, int.MaxValue)] int page = 1,
             [FromQuery][Range(5, 100)] int perPage = 5)
         {
-            var genres = await this.genreService.GetGenrePageAsync(page, perPage, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name}).ToArray()});
+            var genres = await this.genreService.GetGenrePageAsync(page, perPage, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name}).ToArray()});
 
             return this.Ok(genres);
         }
@@ -62,7 +62,7 @@ namespace MusicAPI.Web.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateGenreAsync([FromRoute] Guid id, GenreInputModel model)
         {
-            bool exists = this.genreService.ExistsAsync(id).Result;
+            bool exists = await this.genreService.ExistsAsync(id);
 
             if (!exists)
             {

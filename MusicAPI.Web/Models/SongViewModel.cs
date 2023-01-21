@@ -9,5 +9,9 @@
         public int Year { get; set; }
 
         public Guid AlbumId { get; set; }
+
+        public ArtistViewModel[] Artists { get; set; }
+
+        public GenreViewModel[] Genres { get; set; }
     }
 }

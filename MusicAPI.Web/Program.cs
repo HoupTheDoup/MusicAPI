@@ -54,6 +54,7 @@ namespace MusicAPI.Web
             builder.Services.AddTransient<IGenreService, GenreService>();
             builder.Services.AddTransient<IArtistService, ArtistService>();
             builder.Services.AddTransient<IAlbumService, AlbumService>();
+            builder.Services.AddTransient<ISongService, SongService>();
             builder.Services.AddTransient<IAuthorizationService, AuthorizationService>();
 
 

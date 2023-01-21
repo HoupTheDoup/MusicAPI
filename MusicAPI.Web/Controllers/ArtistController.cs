@@ -27,7 +27,7 @@ namespace MusicAPI.Web.Controllers
                 Id = x.Id,
                 Name = x.Name,
                 IsGroup = x.IsGroup,
-                Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()
+                Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
             });
 
             if (model == null)
@@ -48,7 +48,7 @@ namespace MusicAPI.Web.Controllers
                 Id = x.Id,
                 Name = x.Name,
                 IsGroup = x.IsGroup,
-                Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()
+                Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
             });
 
             return this.Ok(artists);
@@ -73,7 +73,7 @@ namespace MusicAPI.Web.Controllers
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateArtistAsync([FromRoute] Guid id, ArtistInputModel model)
         {
-            bool exists = this.artistService.ExistsAsync(id).Result;
+            bool exists = await this.artistService.ExistsAsync(id);
 
             if (!exists)
             {

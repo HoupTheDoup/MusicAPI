@@ -8,8 +8,8 @@
 
         public Album Album { get; set; }
 
-        public ICollection<Artist> Artists { get; set; } = new HashSet<Artist>();
+        public ICollection<SongArtist> Artists { get; set; } = new HashSet<SongArtist>();
 
-        public ICollection<Genre> Genres { get; set; } = new HashSet<Genre>();
+        public ICollection<SongGenre> Genres { get; set; } = new HashSet<SongGenre>();
     }
 }

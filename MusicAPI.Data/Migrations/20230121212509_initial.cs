@@ -219,60 +219,53 @@ namespace MusicAPI.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ArtistSong",
+                name: "SongArtists",
                 columns: table => new
                 {
-                    ArtistsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SongsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    SongId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ArtistId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ArtistSong", x => new { x.ArtistsId, x.SongsId });
+                    table.PrimaryKey("PK_SongArtists", x => new { x.SongId, x.ArtistId });
                     table.ForeignKey(
-                        name: "FK_ArtistSong_Artists_ArtistsId",
-                        column: x => x.ArtistsId,
+                        name: "FK_SongArtists_Artists_ArtistId",
+                        column: x => x.ArtistId,
                         principalTable: "Artists",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ArtistSong_Songs_SongsId",
-                        column: x => x.SongsId,
+                        name: "FK_SongArtists_Songs_SongId",
+                        column: x => x.SongId,
                         principalTable: "Songs",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "GenreSong",
+                name: "SongGenres",
                 columns: table => new
                 {
-                    GenresId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SongsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    SongId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GenreId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GenreSong", x => new { x.GenresId, x.SongsId });
+                    table.PrimaryKey("PK_SongGenres", x => new { x.SongId, x.GenreId });
                     table.ForeignKey(
-                        name: "FK_GenreSong_Genres_GenresId",
-                        column: x => x.GenresId,
+                        name: "FK_SongGenres_Genres_GenreId",
+                        column: x => x.GenreId,
                         principalTable: "Genres",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_GenreSong_Songs_SongsId",
-                        column: x => x.SongsId,
+                        name: "FK_SongGenres_Songs_SongId",
+                        column: x => x.SongId,
                         principalTable: "Songs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Albums_ArtistId",
                 table: "Albums",
                 column: "ArtistId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ArtistSong_SongsId",
-                table: "ArtistSong",
-                column: "SongsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -314,9 +307,14 @@ namespace MusicAPI.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GenreSong_SongsId",
-                table: "GenreSong",
-                column: "SongsId");
+                name: "IX_SongArtists_ArtistId",
+                table: "SongArtists",
+                column: "ArtistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SongGenres_GenreId",
+                table: "SongGenres",
+                column: "GenreId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Songs_AlbumId",
@@ -326,9 +324,6 @@ namespace MusicAPI.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ArtistSong");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -345,7 +340,10 @@ namespace MusicAPI.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GenreSong");
+                name: "SongArtists");
+
+            migrationBuilder.DropTable(
+                name: "SongGenres");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

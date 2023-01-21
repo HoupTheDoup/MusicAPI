@@ -6,6 +6,6 @@
 
         public string Name { get; set; }
 
-        public ICollection<Song> Songs { get; set; } = new HashSet<Song>();
+        public ICollection<SongGenre> Songs { get; set; } = new HashSet<SongGenre>();
     }
 }
