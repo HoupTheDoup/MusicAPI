@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using MusicAPI.Data.Models;
 using MusicAPI.Services.Interfaces;
 using MusicAPI.Web.Models;
+using MusicAPI.Web.Models.Artist;
+using MusicAPI.Web.Models.Genre;
+using MusicAPI.Web.Models.Song;
 using System.ComponentModel.DataAnnotations;
 
 namespace MusicAPI.Web.Controllers
@@ -48,8 +51,8 @@ namespace MusicAPI.Web.Controllers
                 Name = x.Name,
                 Year = x.Year,
                 AlbumId = x.AlbumId,
-                Artists = x.Artists.Select(y => new ArtistViewModel { Name = y.Artist.Name, Id = y.Artist.Id }).ToArray(),
-                Genres = x.Genres.Select(z => new GenreViewModel { Name = z.Genre.Name, Id = z.Genre.Id }).ToArray()
+                Artists = x.Artists.Select(y => new ArtistNameViewModel { Name = y.Artist.Name, Id = y.Artist.Id }).ToArray(),
+                Genres = x.Genres.Select(z => new GenreNameViewModel { Name = z.Genre.Name, Id = z.Genre.Id }).ToArray()
             });
 
             return this.Ok(songs);

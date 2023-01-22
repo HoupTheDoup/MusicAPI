@@ -55,6 +55,7 @@ namespace MusicAPI.Web
             builder.Services.AddTransient<IArtistService, ArtistService>();
             builder.Services.AddTransient<IAlbumService, AlbumService>();
             builder.Services.AddTransient<ISongService, SongService>();
+            builder.Services.AddTransient<ISongSeederService, SongSeederService>();
             builder.Services.AddTransient<IAuthorizationService, AuthorizationService>();
 
 
@@ -85,6 +86,13 @@ namespace MusicAPI.Web
 
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var songSeeder = scope.ServiceProvider.GetRequiredService<ISongSeederService>();
+
+                await songSeeder.SeedAsync("E:\\1. Programming\\Uni\\3ti semestur\\api\\MusicAPI\\archive\\tracks_features.csv");
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

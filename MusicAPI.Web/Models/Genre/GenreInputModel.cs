@@ -1,4 +1,4 @@
-﻿namespace MusicAPI.Web.Models
+﻿namespace MusicAPI.Web.Models.Genre
 {
     public class GenreInputModel
     {

@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using MusicAPI.Data.Models;
 using MusicAPI.Services.Interfaces;
 using MusicAPI.Web.Models;
+using MusicAPI.Web.Models.Album;
+using MusicAPI.Web.Models.Artist;
+using MusicAPI.Web.Models.Song;
 using System.ComponentModel.DataAnnotations;
 
 namespace MusicAPI.Web.Controllers
@@ -42,12 +45,12 @@ namespace MusicAPI.Web.Controllers
             [FromQuery][Range(0, int.MaxValue)] int page = 1,
             [FromQuery][Range(5, 100)] int perPage = 5)
         {
-            var albums = await this.albumService.GetAlbumPageAsync(page, perPage, x => new AlbumViewModel
+            var albums = await this.albumService.GetAlbumPageAsync(page, perPage, x => new AlbumPageViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
-                Artist = new ArtistViewModel { Name = x.Artist.Name, Id = x.ArtistId },
-                Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()
+                Artist = new ArtistNameViewModel { Name = x.Artist.Name, Id = x.ArtistId },
+               // Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()
             });
 
             return this.Ok(albums);

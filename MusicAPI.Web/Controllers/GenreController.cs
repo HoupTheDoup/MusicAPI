@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using MusicAPI.Data.Models;
 using MusicAPI.Services.Interfaces;
 using MusicAPI.Web.Models;
+using MusicAPI.Web.Models.Genre;
+using MusicAPI.Web.Models.Song;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
@@ -23,7 +25,12 @@ namespace MusicAPI.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] Guid id)
         {
-            var model = await this.genreService.GetGenreByIdAsync(id, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()});
+            var model = await this.genreService.GetGenreByIdAsync(id, x => new GenreNameViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                //Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
+            });
 
             if (model == null)
             {
@@ -38,7 +45,12 @@ namespace MusicAPI.Web.Controllers
             [FromQuery][Range(0, int.MaxValue)] int page = 1,
             [FromQuery][Range(5, 100)] int perPage = 5)
         {
-            var genres = await this.genreService.GetGenrePageAsync(page, perPage, x => new GenreViewModel { Id = x.Id, Name = x.Name, Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name}).ToArray()});
+            var genres = await this.genreService.GetGenrePageAsync(page, perPage, x => new GenreNameViewModel
+            {
+                Id = x.Id,
+                Name = x.Name,
+                //Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
+            });
 
             return this.Ok(genres);
         }

@@ -1,6 +1,6 @@
 ﻿using MusicAPI.Data.Models;
 
-namespace MusicAPI.Web.Models
+namespace MusicAPI.Web.Models.Album
 {
     public class AlbumInputModel
     {

@@ -1,13 +1,11 @@
-﻿namespace MusicAPI.Web.Models
+﻿namespace MusicAPI.Web.Models.Artist
 {
-    public class ArtistViewModel
+    public class ArtistNameViewModel
     {
         public Guid Id { get; set; }
 
         public string Name { get; set; }
 
         public bool IsGroup { get; set; }
-
-        public SongViewModel[] Songs { get; set; }
     }
 }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using MusicAPI.Data.Models;
 using MusicAPI.Services.Interfaces;
 using MusicAPI.Web.Models;
+using MusicAPI.Web.Models.Artist;
+using MusicAPI.Web.Models.Song;
 using System.ComponentModel.DataAnnotations;
 
 namespace MusicAPI.Web.Controllers
@@ -27,7 +29,7 @@ namespace MusicAPI.Web.Controllers
                 Id = x.Id,
                 Name = x.Name,
                 IsGroup = x.IsGroup,
-                Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
+                //Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
             });
 
             if (model == null)
@@ -43,12 +45,12 @@ namespace MusicAPI.Web.Controllers
             [FromQuery][Range(0, int.MaxValue)] int page = 1,
             [FromQuery][Range(5, 100)] int perPage = 5)
         {
-            var artists = await this.artistService.GetArtistPageAsync(page, perPage, x => new ArtistViewModel
+            var artists = await this.artistService.GetArtistPageAsync(page, perPage, x => new ArtistNameViewModel
             {
                 Id = x.Id,
                 Name = x.Name,
                 IsGroup = x.IsGroup,
-                Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
+                //Songs = x.Songs.Select(y => new SongViewModel { Name = y.Song.Name }).ToArray()
             });
 
             return this.Ok(artists);

@@ -1,14 +1,12 @@
-﻿using MusicAPI.Data.Models;
+﻿using MusicAPI.Web.Models.Song;
 
-namespace MusicAPI.Web.Models
+namespace MusicAPI.Web.Models.Genre
 {
-    public class AlbumViewModel
+    public class GenreViewModel
     {
         public Guid Id { get; set; }
 
         public string Name { get; set; }
-
-        public ArtistViewModel Artist { get; set; }
 
         public SongViewModel[] Songs { get; set; }
     }
