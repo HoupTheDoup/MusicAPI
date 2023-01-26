@@ -26,6 +26,12 @@ namespace MusicAPI.Services
 
         public async Task DeleteSongAsync(Guid id)
         {
+            var songArtist = await dbContext.SongArtists.Where(x => x.SongId == id).ToArrayAsync();
+            this.dbContext.RemoveRange(songArtist);
+
+            var songGenre = await dbContext.SongGenres.Where(x => x.SongId == id).ToArrayAsync();
+            this.dbContext.RemoveRange(songGenre);
+
             this.dbContext.Songs.Remove(new Song { Id = id });
 
             await this.dbContext.SaveChangesAsync();

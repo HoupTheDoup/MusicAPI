@@ -28,8 +28,10 @@ namespace MusicAPI.Web.Controllers
             {
                 Id = x.Id,
                 Name = x.Name,
-                //Artist = new ArtistViewModel { Name = x.Artist.Name },
-                // Songs = x.Songs.Select(y => new SongViewModel { Name = y.Name }).ToArray()
+                Year = x.Year,
+                AlbumId = x.AlbumId,
+                Artists = x.Artists.Select(y => new ArtistNameViewModel { Name = y.Artist.Name, Id = y.Artist.Id }).ToArray(),
+                Genres = x.Genres.Select(z => new GenreNameViewModel { Name = z.Genre.Name, Id = z.Genre.Id }).ToArray()
             });
 
             if (model == null)
